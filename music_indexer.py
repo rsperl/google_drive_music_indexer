@@ -9,6 +9,7 @@ import sys
 from typing import Union
 
 import gspread
+from gspread.utils import ValueInputOption
 import yaml
 from google.oauth2 import service_account
 from googleapiclient import discovery
@@ -153,16 +154,17 @@ def setup_worksheet(sheet: gspread.Worksheet):
 def load_spreadsheet(sheet: gspread.Worksheet, dbsession: Session):
     logger = logging.getLogger(__name__)
     row_number = 2
+    rows = []
     for song in (
         dbsession.query(Song).order_by(Song.artist, Song.name, Song.instrument).all()
     ):
         logger.info(f"adding {song.artist}: {song.name} ({song.instrument})")
 
         name_href = f'=HYPERLINK("{song.link}", "{song.name}")'
-        row = [song.artist, song.name, song.instrument, song.location, song.document_id]
-        sheet.append_row(row)
-        sheet.update_cell(row_number, 2, name_href)
+        row = [song.artist, name_href, song.instrument, song.location, song.document_id]
+        rows.append(row)
         row_number += 1
+    sheet.append_rows(rows, value_input_option=ValueInputOption.user_entered)
     sheet.columns_auto_resize(1, 10)
 
 
