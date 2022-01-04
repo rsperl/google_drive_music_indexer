@@ -1,0 +1,14 @@
+# paths to search for music
+# folders must be in folder structure of
+# <artist>/<instrument>/<filename>
+index_paths:
+  - name: /guitar/by-author
+    id: xxx
+    
+find_page_size: 1000
+
+# id of the music index spreadsheet
+spreadsheet_id: xxx
+
+# name of the sheet in the spreadsheet to index files
+sheet_name: index
